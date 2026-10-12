@@ -1,0 +1,24 @@
+Photos are stored locally. Sources are Wikimedia Commons. Licenses are CC0, public domain, or Creative Commons (BY / BY-SA).
+
+Each picture is one whole animal or fruit, large and centered, for a young child to name.
+
+cat.jpg — CC BY-SA 3.0 — Alvesgaspar — https://commons.wikimedia.org/wiki/File:Cat_November_2010-1a.jpg
+dog.jpg — CC0 — Joselodos — https://commons.wikimedia.org/wiki/File:Border_collie_sitting_on_the_grass.jpg
+bird.jpg — CC BY 4.0 — Alexis Lours — https://commons.wikimedia.org/wiki/File:European_Robin_2023-10-10.jpg
+fish.jpg — CC BY-SA 4.0 — Kolforn — https://commons.wikimedia.org/wiki/File:2018-05-13_Goldfish,_Cromer,_Norfolk_(1).JPG
+duck.jpg — CC BY 3.0 — Acarpentier — https://commons.wikimedia.org/wiki/File:Male_mallard_duck_3.jpg
+cow.jpg — Public domain — Keith Weller / USDA — https://commons.wikimedia.org/wiki/File:Cow_female_black_white.jpg
+pig.jpg — CC BY-SA 3.0 — Modris Putns — https://commons.wikimedia.org/wiki/File:A_pig_in_Dundaga.jpg
+rabbit.jpg — CC BY 3.0 — JM Ligero Loarte — https://commons.wikimedia.org/wiki/File:Oryctolagus_cuniculus_Rcdo.jpg
+frog.jpg — CC BY 3.0 — birdphotos.com — https://commons.wikimedia.org/wiki/File:Hyla_cinerea.jpg
+horse.jpg — CC0 — Joselodos — https://commons.wikimedia.org/wiki/File:Horse_posing_in_the_grass.jpg
+apple.jpg — Public domain — Renee Comet / National Cancer Institute — https://commons.wikimedia.org/wiki/File:Apple_(1).jpg
+banana.jpg — CC BY-SA 3.0 — Evan-Amos — https://commons.wikimedia.org/wiki/File:Banana-Single.jpg
+orange-fruit.jpg — CC BY-SA 3.0 — Augustus Binu — https://commons.wikimedia.org/wiki/File:Single_Orange_(Fruit).jpg
+grapes.jpg — Public domain — Renee Comet / National Cancer Institute — https://commons.wikimedia.org/wiki/File:Grapes_(2).jpg
+watermelon.jpg — Public domain — Garitzko — https://commons.wikimedia.org/wiki/File:Wassermelone.jpg
+strawberry.jpg — CC BY 2.0 — Tim Reckmann — https://commons.wikimedia.org/wiki/File:Erdbeere_(13904891435).jpg
+mango.jpg — CC BY-SA 4.0 — Leo219 — https://commons.wikimedia.org/wiki/File:A_mango_fruit_with_speckled_red_skin.png
+pineapple.jpg — CC0 — Julien Pianetti — https://commons.wikimedia.org/wiki/File:Pineapple_on_white_table.jpg
+pear.jpg — CC BY-SA 4.0 — Wouter Hagens — https://commons.wikimedia.org/wiki/File:2019-09-25_Pear.jpg
+lemon.jpg — CC BY 2.0 — ben dalton — https://commons.wikimedia.org/wiki/File:Lemon_Fruit.jpg
