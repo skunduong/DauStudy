@@ -49,6 +49,7 @@ const chipTone: Record<string, string> = {
   objects: "border-sky-300 bg-sky-200 text-sky-950",
   actions: "border-emerald-300 bg-emerald-200 text-emerald-950",
   body: "border-teal-300 bg-teal-200 text-teal-950",
+  weather: "border-cyan-300 bg-cyan-200 text-cyan-950",
 };
 
 function StarIcon({ filled, className }: { filled: boolean; className?: string }) {

@@ -111,6 +111,17 @@ const body: Word[] = [
   { id: "knee", en: "knee", vi: "đầu gối" },
 ];
 
+const weather: Word[] = [
+  { id: "sunny", en: "sunny", vi: "trời nắng" },
+  { id: "rainy", en: "rainy", vi: "trời mưa" },
+  { id: "cloudy", en: "cloudy", vi: "nhiều mây" },
+  { id: "windy", en: "windy", vi: "có gió" },
+  { id: "snowy", en: "snowy", vi: "có tuyết" },
+  { id: "stormy", en: "stormy", vi: "có bão" },
+  { id: "rainbow", en: "rainbow", vi: "cầu vồng" },
+  { id: "foggy", en: "foggy", vi: "sương mù" },
+];
+
 export const categories: Category[] = [
   { id: "animals", label: "Động vật", words: animals },
   { id: "fruits", label: "Trái cây", words: fruits },
@@ -119,6 +130,7 @@ export const categories: Category[] = [
   { id: "objects", label: "Đồ vật", words: objects },
   { id: "actions", label: "Hành động", words: actions },
   { id: "body", label: "Bộ phận cơ thể", words: body },
+  { id: "weather", label: "Thời tiết", words: weather },
 ];
 
 export function categoryById(id: string): Category {

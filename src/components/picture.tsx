@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { colorSwatches, type Word } from "@/lib/words";
+import { isWeather, WeatherPicture } from "@/components/weather";
 
 /** One solid color per shape so the cards read as different at a glance. */
 const shapeFill: Record<string, string> = {
@@ -45,6 +46,9 @@ export function Picture({ word }: { word: Word }) {
   const swatch = colorSwatches[word.id];
   if (swatch) {
     return <span aria-hidden="true" className="absolute inset-0" style={{ backgroundColor: swatch }} />;
+  }
+  if (isWeather(word.id)) {
+    return <WeatherPicture id={word.id} />;
   }
   if (shapeFill[word.id]) {
     return (
