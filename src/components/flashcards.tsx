@@ -89,17 +89,32 @@ function StarMeter({ count, roomy = false }: { count: number; roomy?: boolean })
   );
 }
 
-export function Flashcards({ onExit }: { onExit: () => void }) {
-  const [categoryId, setCategoryId] = useState(categories[0].id);
-  const [phase, setPhase] = useState<"home" | "play" | "success">("home");
-  const [round, setRound] = useState<Round | null>(null);
+function firstQuizRound(quizCategoryId: string): Round {
+  const category = categoryById(quizCategoryId);
+  const progress = topicProgress(typeof window === "undefined" ? "" : readProgressRaw(), category);
+  return makeRound(openWords(category, progress), 1, {
+    weight: (word) => answerWeight(progress, word),
+  });
+}
+
+export function Flashcards({
+  onExit,
+  quizCategoryId,
+}: {
+  onExit: () => void;
+  quizCategoryId?: string;
+}) {
+  const [categoryId, setCategoryId] = useState(quizCategoryId ?? categories[0].id);
+  const [phase, setPhase] = useState<"home" | "play" | "success">(quizCategoryId ? "play" : "home");
+  const [round, setRound] = useState<Round | null>(() => (quizCategoryId ? firstQuizRound(quizCategoryId) : null));
   const [shake, setShake] = useState<{ id: string; nonce: number } | null>(null);
   const stars = useSyncExternalStore(subscribeStars, readStars, serverStars);
   const progressRaw = useSyncExternalStore(subscribeProgress, readProgressRaw, serverProgressRaw);
-  const roundToken = useRef(0);
+  const roundToken = useRef(quizCategoryId ? 1 : 0);
   const advanceTimer = useRef<number | null>(null);
   const shakeTimer = useRef<number | null>(null);
   const answering = useRef(false);
+  const openingSpoken = useRef(false);
   /** Whether the child tapped a wrong picture in this round. */
   const missed = useRef(false);
 
@@ -111,6 +126,12 @@ export function Flashcards({ onExit }: { onExit: () => void }) {
       stopSpeech();
     };
   }, []);
+
+  useEffect(() => {
+    if (!quizCategoryId || !round || openingSpoken.current) return;
+    openingSpoken.current = true;
+    speakEnglish(round.answer.en);
+  }, [quizCategoryId, round]);
 
   useEffect(() => {
     function typingTarget(target: EventTarget | null) {
@@ -171,9 +192,13 @@ export function Flashcards({ onExit }: { onExit: () => void }) {
   function goHome() {
     roundToken.current += 1;
     clearAdvance();
-    setPhase("home");
     setShake(null);
     stopSpeech();
+    if (quizCategoryId) {
+      onExit();
+      return;
+    }
+    setPhase("home");
   }
 
   function onPick(choiceId: string) {

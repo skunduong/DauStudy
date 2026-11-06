@@ -11,7 +11,7 @@ const nunito = Nunito({
 
 export const metadata: Metadata = {
   title: "Học và chơi",
-  description: "Hai cửa cho bé: học tiếng Anh, và trò chơi tư duy.",
+  description: "Ba cửa cho bé: học tiếng Anh, ôn bài, và trò chơi tư duy.",
 };
 
 export const viewport: Viewport = {

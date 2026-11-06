@@ -1,5 +1,10 @@
+import { CourseFrame } from "@/components/course-frame";
 import { Hub } from "@/components/hub";
 
 export default function Home() {
-  return <Hub />;
+  return (
+    <CourseFrame>
+      <Hub />
+    </CourseFrame>
+  );
 }
