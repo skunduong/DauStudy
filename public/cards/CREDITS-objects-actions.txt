@@ -18,3 +18,10 @@ clap.jpg — CC BY-SA 2.0 — Rod Waddington — https://www.flickr.com/photos/6
 drink.jpg — CC BY 2.0 — Shixart1985 — https://commons.wikimedia.org/wiki/File:Boy_drinks_water_from_glass_in_a_cozy_home_environment.jpg
 sit.jpg — CC BY-SA 2.0 — Roxanne Brabant — https://commons.wikimedia.org/wiki/File:Woman_on_chair.jpg
 walk.jpg — CC BY 4.0 — Bobjgalindo — https://commons.wikimedia.org/wiki/File:A_child_walking_in_home_yard,_Northern_Maracay,_Venezuela.jpg
+laugh.jpg — CC BY 2.0 — Katie Thomas (colorized by Shayaantik) — https://commons.wikimedia.org/wiki/File:Laughing_Toddler_(colorized).jpg
+hug.jpg — CC BY 2.0 — Shixart1985 — https://commons.wikimedia.org/wiki/File:Adult_person_hugging_a_boy_and_a_girl_near_the_river.jpg
+wave.jpg — CC BY-SA 2.0 — Adam Jones — https://commons.wikimedia.org/wiki/File:Girl_Waves_Hello_-_Polotsk_-_Vitebsk_Oblast_-_Belarus_(27552846901).jpg
+wash.jpg — CC BY 2.0 — Shixart1985 — https://commons.wikimedia.org/wiki/File:A_child_is_carefully_washing_their_hands_under_a_running_faucet_in_a_well-lit_bathroom.jpg
+swim.jpg — CC BY 2.0 — Shixart1985 — https://commons.wikimedia.org/wiki/File:Child_jumps_into_a_pool_while_another_child_swims_nearby.jpg
+read.jpg — CC BY 2.0 — MIKI Yoshihito — https://commons.wikimedia.org/wiki/File:SAKIKO_is_reading_a_picture_book._(49384371852).jpg
+draw.jpg — CC BY 2.0 — D. Sharon Pruitt — https://commons.wikimedia.org/wiki/File:Child_drawing.jpg

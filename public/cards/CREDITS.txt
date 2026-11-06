@@ -1,6 +1,6 @@
 Photos are stored locally. Sources are Wikimedia Commons. Licenses are CC0, public domain, or Creative Commons (BY / BY-SA).
 
-Color cards (red, blue, yellow, green, orange, purple, pink, brown, black, white) are flat color fields, not photographs.
+Color cards (red, blue, yellow, green, orange, purple, pink, brown, black, white, gray, light blue, gold, silver) are color fields, not photographs. Gold and silver have a soft metallic sheen; the rest are flat.
 
 cat.jpg — CC0 — AdinaVoicu — https://commons.wikimedia.org/wiki/File:Tabby_cat_with_blue_eyes-3336579.jpg
 dog.jpg — CC BY-SA 3.0 — Calyponte — https://commons.wikimedia.org/wiki/File:CPRileyFace.jpg

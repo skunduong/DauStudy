@@ -12,3 +12,7 @@ head.jpg — original cartoon
 hair.jpg — original cartoon
 arm.jpg — original cartoon
 knee.jpg — original cartoon
+tummy.jpg — original cartoon
+tooth.jpg — original cartoon
+finger.jpg — original cartoon
+tongue.jpg — original cartoon

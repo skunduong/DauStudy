@@ -14,6 +14,12 @@ const skies: Record<string, [string, string]> = {
   stormy: ["#232f47", "#55627c"],
   rainbow: ["#74c6ff", "#dcf2ff"],
   foggy: ["#b9c3cd", "#eaeef2"],
+  hot: ["#ff8a3d", "#ffe29a"],
+  cold: ["#8fd0ff", "#eefaff"],
+  night: ["#0f1c4d", "#34478c"],
+  sunset: ["#7b5cd6", "#ffb370"],
+  puddle: ["#8cc8ff", "#e6f4ff"],
+  tornado: ["#7d889c", "#cfd6e0"],
 };
 
 export function isWeather(id: string) {
@@ -35,6 +41,12 @@ function makeIds(prefix: string) {
     bolt: `${p}-bolt`,
     leaf: `${p}-leaf`,
     snow: `${p}-snow`,
+    moon: `${p}-moon`,
+    moonCut: `${p}-moon-cut`,
+    sea: `${p}-sea`,
+    water: `${p}-water`,
+    funnel: `${p}-funnel`,
+    skin: `${p}-skin`,
     shadow: `${p}-shadow`,
     blur: `${p}-blur`,
   };
@@ -85,6 +97,32 @@ function Defs({ ids, sky }: { ids: Ids; sky: [string, string] }) {
         <stop offset="0" stopColor="#ffffff" />
         <stop offset="1" stopColor="#dbe9f7" />
       </linearGradient>
+      <radialGradient id={ids.moon} cx="0.35" cy="0.35" r="0.75">
+        <stop offset="0" stopColor="#fffbe0" />
+        <stop offset="0.55" stopColor="#ffe36b" />
+        <stop offset="1" stopColor="#f2b82e" />
+      </radialGradient>
+      <mask id={ids.moonCut} maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="100">
+        <circle cx="52" cy="46" r="27" fill="#ffffff" />
+        <circle cx="66" cy="36" r="23" fill="#000000" />
+      </mask>
+      <linearGradient id={ids.sea} x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stopColor="#7a5fd0" />
+        <stop offset="1" stopColor="#2f2770" />
+      </linearGradient>
+      <linearGradient id={ids.water} x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stopColor="#a6dcff" />
+        <stop offset="1" stopColor="#2f86e0" />
+      </linearGradient>
+      <linearGradient id={ids.funnel} x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stopColor="#f4f6f9" />
+        <stop offset="0.55" stopColor="#bcc6d3" />
+        <stop offset="1" stopColor="#8a97aa" />
+      </linearGradient>
+      <radialGradient id={ids.skin} cx="0.4" cy="0.35" r="0.7">
+        <stop offset="0" stopColor="#ffe6cf" />
+        <stop offset="1" stopColor="#f3b98a" />
+      </radialGradient>
       <filter id={ids.shadow} x="-30%" y="-30%" width="160%" height="170%">
         <feDropShadow dx="0" dy="2.2" stdDeviation="1.8" floodColor="#0b2545" floodOpacity="0.22" />
       </filter>
@@ -123,17 +161,22 @@ function Cloud({
   );
 }
 
-type Mood = "happy" | "worried" | "blow" | "sleepy";
+type Mood = "happy" | "worried" | "blow" | "sleepy" | "hot" | "cold";
 
 function Face({ x, y, s = 1, mood = "happy", ink = "#3d2a12" }: { x: number; y: number; s?: number; mood?: Mood; ink?: string }) {
   return (
     <g transform={`translate(${x} ${y}) scale(${s})`}>
-      <ellipse cx="-7.5" cy="3" rx="2.8" ry="1.7" fill="#ff7a93" opacity="0.55" />
-      <ellipse cx="7.5" cy="3" rx="2.8" ry="1.7" fill="#ff7a93" opacity="0.55" />
+      <ellipse cx="-7.5" cy="3" rx="2.8" ry="1.7" fill="#ff7a93" opacity={mood === "hot" ? 0.85 : 0.55} />
+      <ellipse cx="7.5" cy="3" rx="2.8" ry="1.7" fill="#ff7a93" opacity={mood === "hot" ? 0.85 : 0.55} />
       {mood === "sleepy" ? (
         <g stroke={ink} strokeWidth="1.4" fill="none" strokeLinecap="round">
           <path d="M-6.5 -2 q1.8 1.6 3.6 0" />
           <path d="M2.9 -2 q1.8 1.6 3.6 0" />
+        </g>
+      ) : mood === "hot" ? (
+        <g stroke={ink} strokeWidth="1.4" fill="none" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M-6.6 -3.8 L-3.4 -2 L-6.6 -0.2" />
+          <path d="M6.6 -3.8 L3.4 -2 L6.6 -0.2" />
         </g>
       ) : (
         <g>
@@ -143,7 +186,7 @@ function Face({ x, y, s = 1, mood = "happy", ink = "#3d2a12" }: { x: number; y: 
           <circle cx="5.1" cy="-2.8" r="0.65" fill="#ffffff" />
         </g>
       )}
-      {mood === "worried" && (
+      {(mood === "worried" || mood === "cold") && (
         <g stroke={ink} strokeWidth="1.2" strokeLinecap="round">
           <line x1="-6.6" y1="-5.4" x2="-3" y2="-6.8" />
           <line x1="6.6" y1="-5.4" x2="3" y2="-6.8" />
@@ -153,6 +196,16 @@ function Face({ x, y, s = 1, mood = "happy", ink = "#3d2a12" }: { x: number; y: 
         <ellipse cx="0" cy="3.6" rx="1.9" ry="2.2" fill={ink} />
       ) : mood === "worried" ? (
         <ellipse cx="0" cy="3.8" rx="1.6" ry="1.3" fill={ink} />
+      ) : mood === "hot" ? (
+        <g>
+          <path d="M-3 2 Q0 1.2 3 2 Q3 6.6 0 6.6 Q-3 6.6 -3 2Z" fill={ink} />
+          <ellipse cx="0" cy="5.4" rx="1.7" ry="1.1" fill="#ff7a93" />
+        </g>
+      ) : mood === "cold" ? (
+        <g>
+          <rect x="-4.2" y="1.8" width="8.4" height="3.8" rx="1.2" fill="#ffffff" stroke={ink} strokeWidth="0.8" />
+          <path d="M-4.2 3.7 l1.4 -1 l1.4 1 l1.4 -1 l1.4 1 l1.4 -1 l1.4 1" fill="none" stroke={ink} strokeWidth="0.6" strokeLinejoin="round" />
+        </g>
       ) : (
         <path d="M-3.4 2.2 Q0 6.4 3.4 2.2Z" fill={ink} />
       )}
@@ -185,6 +238,45 @@ function Leaf({ ids, x, y, r, fill }: { ids: Ids; x: number; y: number; r: numbe
     <g transform={`translate(${x} ${y}) rotate(${r})`}>
       <path d="M-5 0 Q0 -4.5 5 0 Q0 4.5 -5 0Z" fill={fill ?? url(ids.leaf)} />
       <path d="M-4 0 H4" stroke="#ffffff" strokeOpacity="0.6" strokeWidth="0.7" strokeLinecap="round" />
+    </g>
+  );
+}
+
+function Thermometer({ x, level, color }: { x: number; level: number; color: string }) {
+  // A tube 54 tall from y=22; `level` is how full it is, 0..1.
+  const top = 74 - level * 48;
+  return (
+    <g>
+      <rect x={x - 6} y="20" width="12" height="60" rx="6" fill="#ffffff" stroke="#c9d3df" strokeWidth="1.2" />
+      <rect x={x - 2.6} y={top} width="5.2" height={80 - top} rx="2.6" fill={color} />
+      <circle cx={x} cy="81" r="8.5" fill={color} stroke="#ffffff" strokeWidth="2" />
+      <g stroke="#c9d3df" strokeWidth="1" strokeLinecap="round">
+        <line x1={x + 6} y1="32" x2={x + 3.4} y2="32" />
+        <line x1={x + 6} y1="44" x2={x + 3.4} y2="44" />
+        <line x1={x + 6} y1="56" x2={x + 3.4} y2="56" />
+      </g>
+      <ellipse cx={x - 3} cy="79" rx="2" ry="2.8" fill="#ffffff" opacity="0.6" />
+    </g>
+  );
+}
+
+function Twinkle({ x, y, s = 1 }: { x: number; y: number; s?: number }) {
+  return (
+    <path
+      d="M0 -4 Q0.6 -0.6 4 0 Q0.6 0.6 0 4 Q-0.6 0.6 -4 0 Q-0.6 -0.6 0 -4Z"
+      transform={`translate(${x} ${y}) scale(${s})`}
+      fill="#fff4b0"
+    />
+  );
+}
+
+function Boot({ ids, x, y, flip = false }: { ids: Ids; x: number; y: number; flip?: boolean }) {
+  return (
+    <g transform={`translate(${x} ${y}) scale(${flip ? -1 : 1} 1)`}>
+      <path d="M-6 -26 H6 V-8 C13 -8 17 -4 17 1 V3 H-6Z" fill={url(ids.bolt)} stroke="#e29a00" strokeWidth="1" strokeLinejoin="round" />
+      <rect x="-7.4" y="-28.6" width="14.8" height="4.6" rx="2.3" fill="#ffd43b" stroke="#e29a00" strokeWidth="0.8" />
+      <rect x="-6.8" y="2" width="24.6" height="3.4" rx="1.7" fill="#c97a00" />
+      <ellipse cx="-2.4" cy="-17" rx="1.4" ry="5" fill="#ffffff" opacity="0.6" />
     </g>
   );
 }
@@ -323,6 +415,166 @@ function Scene({ id, ids }: { id: string; ids: Ids }) {
             <line x1="4" y1="70" x2="68" y2="70" strokeWidth="8" opacity="0.9" />
             <line x1="36" y1="84" x2="96" y2="84" strokeWidth="9" opacity="0.95" />
           </g>
+        </>
+      );
+    case "hot":
+      return (
+        <>
+          <path d="M0 84 Q28 76 56 83 T100 80 V100 H0Z" fill="#ffd27f" />
+          <g stroke="#ff7a1a" strokeWidth="2" fill="none" strokeLinecap="round" opacity="0.6">
+            <path d="M40 93 q3 -3 6 0 t6 0 t6 0" />
+            <path d="M70 94 q3 -3 6 0 t6 0 t6 0" />
+          </g>
+          <g filter={url(ids.shadow)}>
+            <Thermometer x={18} level={0.92} color="#ff3b30" />
+          </g>
+          <g filter={url(ids.shadow)}>
+            {Array.from({ length: 10 }, (_, index) => (
+              <path
+                key={index}
+                d="M-5.5 -26 Q0 -43 5.5 -26Z"
+                fill={url(ids.ray)}
+                stroke={url(ids.ray)}
+                strokeWidth="2.4"
+                strokeLinejoin="round"
+                transform={`translate(62 46) rotate(${index * 36 + 18}) scale(0.78)`}
+              />
+            ))}
+            <circle cx="62" cy="46" r="20" fill={url(ids.sun)} />
+            <ellipse cx="54" cy="35" rx="5.5" ry="3.2" fill="#ffffff" opacity="0.55" transform="rotate(-30 54 35)" />
+            <Face x={62} y={48} s={1.2} mood="hot" />
+          </g>
+          <Drop ids={ids} x={41} y={36} s={0.55} />
+          <Drop ids={ids} x={84} y={30} s={0.5} />
+        </>
+      );
+    case "cold":
+      return (
+        <>
+          <path d="M0 86 Q30 80 60 86 T100 84 V100 H0Z" fill="#dcefff" />
+          <path
+            d="M0 0 H100 V7 H93 L90 17 L87 7 H78 L75 22 L72 7 H62 L60 14 L58 7 H40 L37 19 L34 7 H24 L22 13 L20 7 H11 L8 18 L5 7 H0Z"
+            fill={url(ids.snow)}
+            filter={url(ids.shadow)}
+          />
+          <g filter={url(ids.shadow)}>
+            <Thermometer x={84} level={0.12} color="#2f86ff" />
+          </g>
+          <g filter={url(ids.shadow)}>
+            <circle cx="42" cy="56" r="21" fill={url(ids.skin)} />
+            <path d="M20 54 Q20 29 42 29 Q64 29 64 54Z" fill="#ff5a5f" />
+            <rect x="19" y="48" width="46" height="9" rx="4.5" fill="#e0444b" />
+            <circle cx="42" cy="28" r="5.5" fill="#ffffff" />
+            <rect x="24" y="73" width="38" height="9" rx="4.5" fill="#3a8dff" />
+            <rect x="48" y="76" width="8" height="17" rx="3" fill="#2f76e0" />
+          </g>
+          <Face x={42} y={64} s={1.05} mood="cold" ink="#3b4a5c" />
+          <g stroke="#5aa9e6" strokeWidth="1.6" fill="none" strokeLinecap="round">
+            <path d="M15 56 q-3 4 0 8" />
+            <path d="M10 54 q-3 6 0 12" />
+            <path d="M69 56 q3 4 0 8" />
+          </g>
+        </>
+      );
+    case "night":
+      return (
+        <>
+          <Twinkle x={14} y={18} s={0.9} />
+          <Twinkle x={84} y={14} s={0.7} />
+          <Twinkle x={88} y={46} s={1} />
+          <Twinkle x={18} y={52} s={0.6} />
+          <Twinkle x={70} y={70} s={0.7} />
+          <circle cx="30" cy="30" r="1" fill="#fff4b0" />
+          <circle cx="76" cy="30" r="0.9" fill="#fff4b0" />
+          <circle cx="10" cy="72" r="0.9" fill="#fff4b0" />
+          <circle cx="52" cy="46" r="34" fill="#fff6c0" opacity="0.1" />
+          <g filter={url(ids.shadow)}>
+            <circle cx="52" cy="46" r="27" fill={url(ids.moon)} mask={url(ids.moonCut)} />
+          </g>
+          <g transform="rotate(-38 40 56)">
+            <Face x={40} y={56} s={0.82} mood="sleepy" ink="#7a4b12" />
+          </g>
+          <g stroke="#dfe7ff" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M68 52 h5 l-5 6 h5" />
+            <path d="M76 42 h3.6 l-3.6 4.4 h3.6" />
+          </g>
+          <path d="M0 86 Q25 77 50 84 T100 80 V100 H0Z" fill="#1b2a60" />
+        </>
+      );
+    case "sunset":
+      return (
+        <>
+          <g fill="none" stroke="#4a2f6b" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M16 26 q3 -3 6 0 q3 -3 6 0" />
+            <path d="M30 18 q2.2 -2.2 4.4 0 q2.2 -2.2 4.4 0" />
+            <path d="M72 24 q2.6 -2.6 5.2 0 q2.6 -2.6 5.2 0" />
+          </g>
+          <g filter={url(ids.shadow)}>
+            <circle cx="50" cy="70" r="24" fill={url(ids.sun)} />
+            <ellipse cx="42" cy="56" rx="5.5" ry="3.2" fill="#ffffff" opacity="0.5" transform="rotate(-30 42 56)" />
+          </g>
+          <Face x={50} y={61} s={1.15} mood="sleepy" />
+          <rect x="0" y="70" width="100" height="30" fill={url(ids.sea)} />
+          <g stroke="#ffcf6b" strokeLinecap="round">
+            <line x1="32" y1="75" x2="68" y2="75" strokeWidth="2.6" />
+            <line x1="38" y1="81" x2="62" y2="81" strokeWidth="2.4" opacity="0.85" />
+            <line x1="43" y1="87" x2="57" y2="87" strokeWidth="2.2" opacity="0.7" />
+            <line x1="47" y1="93" x2="53" y2="93" strokeWidth="2" opacity="0.55" />
+          </g>
+        </>
+      );
+    case "puddle":
+      return (
+        <>
+          <Cloud ids={ids} x={14} y={22} s={0.62} tone="grey" />
+          <Drop ids={ids} x={18} y={38} s={0.55} />
+          <Drop ids={ids} x={30} y={42} s={0.5} />
+          <path d="M0 62 Q50 55 100 62 V100 H0Z" fill={url(ids.leaf)} />
+          <g filter={url(ids.shadow)}>
+            <ellipse cx="52" cy="82" rx="42" ry="12" fill={url(ids.water)} />
+          </g>
+          <g fill="none" stroke="#ffffff" strokeLinecap="round" opacity="0.7">
+            <ellipse cx="52" cy="83" rx="30" ry="7.5" strokeWidth="1.2" />
+            <ellipse cx="22" cy="80" rx="7" ry="2" strokeWidth="1" />
+            <ellipse cx="84" cy="85" rx="6" ry="1.8" strokeWidth="1" />
+          </g>
+          <g filter={url(ids.shadow)}>
+            <Boot ids={ids} x={44} y={80} flip />
+            <Boot ids={ids} x={60} y={81} />
+          </g>
+          <Drop ids={ids} x={30} y={64} s={0.5} />
+          <Drop ids={ids} x={74} y={62} s={0.55} />
+          <Drop ids={ids} x={38} y={56} s={0.4} />
+          <Drop ids={ids} x={68} y={54} s={0.4} />
+        </>
+      );
+    case "tornado":
+      return (
+        <>
+          <path d="M0 84 Q30 78 60 84 T100 82 V100 H0Z" fill={url(ids.leaf)} />
+          <ellipse cx="46" cy="88" rx="16" ry="3.6" fill="#8d7b6a" opacity="0.35" />
+          <g filter={url(ids.shadow)}>
+            {[
+              [50, 16, 70],
+              [53, 26, 60],
+              [55, 36, 50],
+              [54, 46, 40],
+              [51, 56, 31],
+              [48, 66, 22],
+              [46, 76, 13],
+            ].map(([cx, y, w]) => (
+              <rect key={y} x={cx - w / 2} y={y} width={w} height="11" rx="5.5" fill={url(ids.funnel)} />
+            ))}
+          </g>
+          <g fill="none" stroke="#ffffff" strokeWidth="1.4" strokeLinecap="round" opacity="0.75">
+            <path d="M22 20 q14 4 30 0" />
+            <path d="M34 50 q10 3 20 0" />
+            <path d="M40 70 q6 2 12 0" />
+          </g>
+          <Face x={53} y={33} s={1.05} mood="blow" ink="#3b4a5c" />
+          <Leaf ids={ids} x={16} y={44} r={-30} />
+          <Leaf ids={ids} x={84} y={56} r={35} fill="#ffa63d" />
+          <Leaf ids={ids} x={24} y={72} r={60} fill="#ff7b54" />
         </>
       );
     default:
