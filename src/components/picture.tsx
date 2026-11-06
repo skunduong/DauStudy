@@ -56,7 +56,7 @@ function ShapeMark({ id }: { id: string }) {
   return null;
 }
 
-export function Picture({ word }: { word: Word }) {
+export function Picture({ word }: { word: Pick<Word, "id"> }) {
   const swatch = colorSwatches[word.id];
   if (swatch) {
     return <span aria-hidden="true" className="absolute inset-0" style={{ background: swatch }} />;

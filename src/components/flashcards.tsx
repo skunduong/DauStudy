@@ -5,6 +5,15 @@ import { Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Picture } from "@/components/picture";
 import { makeRound, type Round } from "@/lib/game";
+import {
+  answerWeight,
+  openWords,
+  readProgressRaw,
+  recordRound,
+  serverProgressRaw,
+  subscribeProgress,
+  topicProgress,
+} from "@/lib/progress";
 import { playPraise, playWrong, speakEnglish, stopSpeech } from "@/lib/speech";
 import { categories, categoryById, type Category } from "@/lib/words";
 import { cn } from "@/lib/utils";
@@ -86,10 +95,13 @@ export function Flashcards({ onExit }: { onExit: () => void }) {
   const [round, setRound] = useState<Round | null>(null);
   const [shake, setShake] = useState<{ id: string; nonce: number } | null>(null);
   const stars = useSyncExternalStore(subscribeStars, readStars, serverStars);
+  const progressRaw = useSyncExternalStore(subscribeProgress, readProgressRaw, serverProgressRaw);
   const roundToken = useRef(0);
   const advanceTimer = useRef<number | null>(null);
   const shakeTimer = useRef<number | null>(null);
   const answering = useRef(false);
+  /** Whether the child tapped a wrong picture in this round. */
+  const missed = useRef(false);
 
   useEffect(() => {
     return () => {
@@ -143,8 +155,13 @@ export function Flashcards({ onExit }: { onExit: () => void }) {
     clearAdvance();
     const nextId = roundToken.current + 1;
     roundToken.current = nextId;
-    const next = makeRound(category.words, nextId, avoidId);
+    const progress = topicProgress(readProgressRaw(), category);
+    const next = makeRound(openWords(category, progress), nextId, {
+      avoidId,
+      weight: (word) => answerWeight(progress, word),
+    });
     answering.current = false;
+    missed.current = false;
     setRound(next);
     setPhase("play");
     setShake(null);
@@ -165,6 +182,7 @@ export function Flashcards({ onExit }: { onExit: () => void }) {
       answering.current = true;
       const token = roundToken.current;
       const category = categoryById(categoryId);
+      recordRound(category, choiceId, !missed.current);
       setPhase("success");
       addStar();
       playPraise();
@@ -175,6 +193,7 @@ export function Flashcards({ onExit }: { onExit: () => void }) {
       }, 1600);
       return;
     }
+    missed.current = true;
     setShake({ id: choiceId, nonce: Date.now() });
     playWrong();
     if (shakeTimer.current !== null) window.clearTimeout(shakeTimer.current);
@@ -188,6 +207,7 @@ export function Flashcards({ onExit }: { onExit: () => void }) {
           <HomeScreen
             categoryId={categoryId}
             stars={stars}
+            progressRaw={progressRaw}
             onSelect={setCategoryId}
             onPlay={() => startRound(categoryById(categoryId))}
             onExit={onExit}
@@ -212,12 +232,14 @@ export function Flashcards({ onExit }: { onExit: () => void }) {
 function HomeScreen({
   categoryId,
   stars,
+  progressRaw,
   onSelect,
   onPlay,
   onExit,
 }: {
   categoryId: string;
   stars: number;
+  progressRaw: string;
   onSelect: (id: string) => void;
   onPlay: () => void;
   onExit: () => void;
@@ -259,6 +281,7 @@ function HomeScreen({
           <div className="grid grid-cols-2 gap-3">
             {categories.map((category) => {
               const selected = category.id === categoryId;
+              const open = topicProgress(progressRaw, category).open;
               return (
                 <Button
                   key={category.id}
@@ -277,6 +300,9 @@ function HomeScreen({
                     <Picture word={category.words[0]} />
                   </span>
                   {category.label}
+                  <span className="text-sm font-bold opacity-60">
+                    {open}/{category.words.length} từ
+                  </span>
                 </Button>
               );
             })}
