@@ -32,3 +32,19 @@ papaya.jpg — Public domain — USDA (U.S. Department of Agriculture) — https
 avocado.jpg — CC BY-SA 4.0 — Rodrigo.Argenton — https://commons.wikimedia.org/wiki/File:Abacate_em_fundo_preto.jpg
 dragon-fruit.jpg — CC BY-SA 4.0 — Webysther Nunes — https://commons.wikimedia.org/wiki/File:Webysther_20150409032418_-_Pitaya.jpg
 rambutan.jpg — CC BY-SA 4.0 — Carlos Valenzuela — https://commons.wikimedia.org/wiki/File:Nephelium_lappaceum201907mx.jpg
+mouse.jpg — CC BY-SA 4.0 — Dion Art — https://commons.wikimedia.org/wiki/File:Домовая_мышь_(Mus_musculus),_Москва.jpg
+bee.jpg — CC BY-SA 4.0 — Ivar Leidus — https://commons.wikimedia.org/wiki/File:Apis_mellifera_-_Brassica_napus_-_Valingu.jpg
+lion.jpg — CC BY-SA 4.0 — Giles Laurent — https://commons.wikimedia.org/wiki/File:011_The_lion_king_Tryggve_in_the_Serengeti_National_Park_Photo_by_Giles_Laurent.jpg
+bear.jpg — CC BY 2.0 — Taral Jansen/Soldatnytt — https://commons.wikimedia.org/wiki/File:Ursus_arctos_-_Norway.jpg
+buffalo.jpg — CC BY-SA 4.0 — Basile Morin — https://commons.wikimedia.org/wiki/File:Bubalus_bubalis_(water_buffalo)_looking_at_the_viewer,_the_feet_in_a_pond,_in_Laos.jpg
+goat.jpg — CC BY-SA 4.0 — Anil Öztas — https://commons.wikimedia.org/wiki/File:Capra_aegagrus_hircus,_Neuss_(DE)_--_2023_--_0021.jpg
+snake.jpg — CC0 — Alfonso Castro — https://commons.wikimedia.org/wiki/File:A_green_snake_coiling_a_leaf_(Unsplash).jpg
+crab.jpg — CC BY-SA 4.0 — Hans Hillewaert — https://commons.wikimedia.org/wiki/File:Carcinus_maenas.jpg
+giraffe.jpg — CC BY-SA 2.0 — Bernard DUPONT — https://commons.wikimedia.org/wiki/File:Giraffe_(Giraffa_camelopardalis)_(Photo_JC_PLE)_(52698287044).jpg
+zebra.jpg — CC BY-SA 2.0 — Bernard DUPONT — https://commons.wikimedia.org/wiki/File:Plains_Zebra_(Equus_quagga)_stallion_..._(52705484290).jpg
+crocodile.jpg — CC BY-SA 4.0 — Matti Blume — https://commons.wikimedia.org/wiki/File:Nile_crocodile,_Nile_crocodile,_Kasane_(20260520-P1076213).jpg
+owl.jpg — CC BY 3.0 — Michael Gäbler — https://commons.wikimedia.org/wiki/File:Tyto_alba_(Scopoli,_1769).jpg
+penguin.jpg — CC BY-SA 4.0 — Ethmostigmus — https://commons.wikimedia.org/wiki/File:Pesto_the_penguin_(adult_plumage)_1.jpg
+dolphin.jpg — CC BY 2.0 — Mike Prince — https://commons.wikimedia.org/wiki/File:Indo-Pacific_Bottlenose_Dolphin_(5799714117).jpg
+sheep.jpg — CC BY-SA 4.0 — Dominic Nelson — https://commons.wikimedia.org/wiki/File:Sheep_in_a_field_in_Alsager_02.jpg
+snail.jpg — CC BY-SA 4.0 — Dr. Zachi Evenor — https://commons.wikimedia.org/wiki/File:Garden_Snail_2021-10-20_IZE-010.jpg

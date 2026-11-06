@@ -92,6 +92,17 @@ export function openWords(category: Category, progress: TopicProgress): Word[] {
   return levelOrder(category.words).slice(0, progress.open);
 }
 
+/** The highest level in the topic. */
+export function topLevel(category: Category): number {
+  return Math.max(...category.words.map((word) => word.level));
+}
+
+/** The level the child has reached: the level of the last word that opened. */
+export function currentLevel(category: Category, progress: TopicProgress): number {
+  const open = openWords(category, progress);
+  return open.length > 0 ? open[open.length - 1].level : 1;
+}
+
 /**
  * How likely a word is to be the answer. A word that just opened is asked almost at once, while
  * every other picture on the board is one the child knows. Missed words come back more often.
@@ -103,8 +114,15 @@ export function answerWeight(progress: TopicProgress, word: Word): number {
   return fresh + Math.min(misses, 3) * 2;
 }
 
-/** Saves one finished round and opens new words when the child is ready. Returns the words that opened. */
-export function recordRound(category: Category, wordId: string, firstTry: boolean): Word[] {
+export type RoundResult = {
+  /** Words that opened after this round. */
+  opened: Word[];
+  /** The new level when this round moved the child up a level, otherwise null. */
+  levelUp: number | null;
+};
+
+/** Saves one finished round and opens new words when the child is ready. */
+export function recordRound(category: Category, wordId: string, firstTry: boolean): RoundResult {
   const raw = readProgressRaw();
   const saved = parse(raw);
   const current = topicProgress(raw, category);
@@ -132,5 +150,7 @@ export function recordRound(category: Category, wordId: string, firstTry: boolea
     // Private mode or full storage: the game still plays, it just starts over next time.
   }
   window.dispatchEvent(new Event(PROGRESS_EVENT));
-  return opened;
+  const before = currentLevel(category, current);
+  const after = currentLevel(category, next);
+  return { opened, levelUp: after > before ? after : null };
 }

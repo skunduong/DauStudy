@@ -4,6 +4,8 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Picture } from "@/components/picture";
+import { LevelSteps } from "@/components/level-steps";
+import { TopicMark } from "@/components/topic-mark";
 import { makeRound, type Round } from "@/lib/game";
 import {
   answerWeight,
@@ -15,6 +17,7 @@ import {
   topicProgress,
 } from "@/lib/progress";
 import { playPraise, playWrong, speakEnglish, stopSpeech } from "@/lib/speech";
+import { backClass, cardFace, chunky, shell, softTile, softTileOn } from "@/lib/look";
 import { categories, categoryById, type Category } from "@/lib/words";
 import { cn } from "@/lib/utils";
 
@@ -50,16 +53,14 @@ function addStar() {
   window.dispatchEvent(new Event(STAR_EVENT));
 }
 
-const chipTone: Record<string, string> = {
-  animals: "border-amber-300 bg-amber-200 text-amber-950",
-  fruits: "border-rose-300 bg-rose-200 text-rose-950",
-  colors: "border-violet-300 bg-violet-200 text-violet-950",
-  shapes: "border-indigo-300 bg-indigo-200 text-indigo-950",
-  objects: "border-sky-300 bg-sky-200 text-sky-950",
-  actions: "border-emerald-300 bg-emerald-200 text-emerald-950",
-  body: "border-teal-300 bg-teal-200 text-teal-950",
-  weather: "border-cyan-300 bg-cyan-200 text-cyan-950",
-};
+/** A board made only of the words the child has opened in this topic. */
+function roundFor(category: Category, roundId: number, avoidId?: string) {
+  const progress = topicProgress(readProgressRaw(), category);
+  return makeRound(openWords(category, progress), roundId, {
+    avoidId,
+    weight: (word) => answerWeight(progress, word),
+  });
+}
 
 function StarIcon({ filled, className }: { filled: boolean; className?: string }) {
   return (
@@ -78,23 +79,17 @@ function StarIcon({ filled, className }: { filled: boolean; className?: string }
 function StarMeter({ count, roomy = false }: { count: number; roomy?: boolean }) {
   const shown = Math.min(count, 5);
   return (
-    <div className="flex items-center gap-1" aria-label={count === 0 ? "Chưa có sao" : `${count} sao`}>
-      {roomy
-        ? Array.from({ length: 5 }, (_, index) => <StarIcon key={index} filled={index < shown} />)
-        : <StarIcon filled={count > 0} className="size-7" />}
-      <span className={cn("font-extrabold text-amber-800", roomy ? "ml-1 text-lg" : "text-base")}>
+    <div className="flex w-full min-w-0 max-w-full flex-col items-center" aria-label={count === 0 ? "Chưa có sao" : `${count} sao`}>
+      <div className="flex items-center gap-0.5">
+        {roomy
+          ? Array.from({ length: 5 }, (_, index) => <StarIcon key={index} filled={index < shown} className="size-5 sm:size-8" />)
+          : <StarIcon filled={count > 0} className="size-7" />}
+      </div>
+      <span className={cn("max-w-full text-center font-extrabold text-balance text-amber-800", roomy ? "text-xs leading-tight sm:text-lg" : "text-base")}>
         {count === 0 ? (roomy ? "Cùng lấy sao nào" : "") : `${count} sao`}
       </span>
     </div>
   );
-}
-
-function firstQuizRound(quizCategoryId: string): Round {
-  const category = categoryById(quizCategoryId);
-  const progress = topicProgress(typeof window === "undefined" ? "" : readProgressRaw(), category);
-  return makeRound(openWords(category, progress), 1, {
-    weight: (word) => answerWeight(progress, word),
-  });
 }
 
 export function Flashcards({
@@ -106,8 +101,12 @@ export function Flashcards({
 }) {
   const [categoryId, setCategoryId] = useState(quizCategoryId ?? categories[0].id);
   const [phase, setPhase] = useState<"home" | "play" | "success">(quizCategoryId ? "play" : "home");
-  const [round, setRound] = useState<Round | null>(() => (quizCategoryId ? firstQuizRound(quizCategoryId) : null));
+  const [round, setRound] = useState<Round | null>(() =>
+    quizCategoryId ? roundFor(categoryById(quizCategoryId), 1) : null,
+  );
   const [shake, setShake] = useState<{ id: string; nonce: number } | null>(null);
+  /** Set when the last right answer moved the child up a level, for the "Lên cấp" moment. */
+  const [levelUp, setLevelUp] = useState<number | null>(null);
   const stars = useSyncExternalStore(subscribeStars, readStars, serverStars);
   const progressRaw = useSyncExternalStore(subscribeProgress, readProgressRaw, serverProgressRaw);
   const roundToken = useRef(quizCategoryId ? 1 : 0);
@@ -176,13 +175,10 @@ export function Flashcards({
     clearAdvance();
     const nextId = roundToken.current + 1;
     roundToken.current = nextId;
-    const progress = topicProgress(readProgressRaw(), category);
-    const next = makeRound(openWords(category, progress), nextId, {
-      avoidId,
-      weight: (word) => answerWeight(progress, word),
-    });
+    const next = roundFor(category, nextId, avoidId);
     answering.current = false;
     missed.current = false;
+    setLevelUp(null);
     setRound(next);
     setPhase("play");
     setShake(null);
@@ -207,15 +203,15 @@ export function Flashcards({
       answering.current = true;
       const token = roundToken.current;
       const category = categoryById(categoryId);
-      recordRound(category, choiceId, !missed.current);
+      const result = recordRound(category, choiceId, !missed.current);
+      setLevelUp(result.levelUp);
       setPhase("success");
       addStar();
-      playPraise();
       clearAdvance();
-      advanceTimer.current = window.setTimeout(() => {
+      void playPraise().then(() => {
         if (roundToken.current !== token) return;
         startRound(category, choiceId);
-      }, 1600);
+      });
       return;
     }
     missed.current = true;
@@ -226,8 +222,8 @@ export function Flashcards({
   }
 
   return (
-    <div className="min-h-dvh bg-[radial-gradient(circle_at_8%_0%,#ffe7a3_0,transparent_32%),radial-gradient(circle_at_100%_8%,#ffc2d1_0,transparent_28%),radial-gradient(circle_at_80%_100%,#c7ecff_0,transparent_34%),#fff6ea] text-foreground">
-      <div className="mx-auto flex min-h-dvh w-full max-w-3xl flex-col px-4 py-4 sm:px-6 sm:py-6">
+    <div className={cn(shell, "min-h-full")}>
+      <div className="mx-auto flex min-h-full w-full min-w-0 max-w-3xl flex-col overflow-x-clip px-4 py-4 sm:px-6 md:max-w-6xl md:py-6">
         {phase === "home" || !round ? (
           <HomeScreen
             categoryId={categoryId}
@@ -243,6 +239,7 @@ export function Flashcards({
             round={round}
             phase={phase}
             shake={shake}
+            levelUp={levelUp}
             stars={stars}
             onHome={goHome}
             onHear={() => speakEnglish(round.answer.en)}
@@ -271,7 +268,7 @@ function HomeScreen({
 }) {
   return (
     <div className="flex flex-1 flex-col">
-      <div className="flex items-center gap-3 pt-1">
+      <div className="flex min-w-0 items-center gap-2 pt-1">
         <Button
           type="button"
           variant="outline"
@@ -279,34 +276,26 @@ function HomeScreen({
             stopSpeech();
             onExit();
           }}
-          className="h-14 rounded-full border-4 border-white bg-white/90 px-5 text-xl font-extrabold"
+          className={backClass}
         >
           Quay lại
         </Button>
-        <div className="flex flex-1 justify-center">
+        <div className="flex min-w-0 flex-1 justify-center">
           <StarMeter count={stars} roomy />
         </div>
       </div>
-      <div className="flex flex-1 flex-col items-center justify-center gap-8 py-6">
+      <div className="flex flex-1 flex-col items-center justify-center gap-3 py-2 sm:gap-6 sm:py-6">
         <div className="text-center">
-          <div className="mb-4 flex flex-wrap items-end justify-center gap-2 sm:gap-3" aria-hidden="true">
-            {categories.map((category) => (
-              <span key={category.id} className="relative block size-11 overflow-hidden rounded-full sm:size-14">
-                <Picture word={category.words[0]} />
-              </span>
-            ))}
-          </div>
-          <h1 className="text-5xl font-extrabold tracking-tight text-balance sm:text-6xl">Học tiếng Anh</h1>
-          <p className="mx-auto mt-3 max-w-md text-lg font-bold leading-snug text-muted-foreground sm:text-xl">
+          <h1 className="text-4xl font-extrabold tracking-tight text-balance sm:text-6xl">Học tiếng Anh</h1>
+          <p className="mx-auto mt-1 max-w-md text-base font-bold leading-snug text-[#8a6248] sm:mt-3 sm:text-lg">
             Bé nghe từ tiếng Anh, rồi chạm vào bức tranh đúng.
           </p>
         </div>
-        <div className="w-full max-w-lg">
-          <p className="mb-3 text-center text-base font-extrabold">Chọn chủ đề</p>
-          <div className="grid grid-cols-2 gap-3">
+        <div className="w-full">
+          <p className="mb-3 text-center text-lg font-extrabold">Chọn chủ đề</p>
+          <div className="grid w-full min-w-0 grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
             {categories.map((category) => {
               const selected = category.id === categoryId;
-              const open = topicProgress(progressRaw, category).open;
               return (
                 <Button
                   key={category.id}
@@ -315,19 +304,14 @@ function HomeScreen({
                   aria-pressed={selected}
                   onClick={() => onSelect(category.id)}
                   className={cn(
-                    "h-28 flex-col gap-1 rounded-[1.6rem] border-4 text-xl font-extrabold shadow-[0_6px_0_rgba(80,50,20,0.08)]",
-                    selected
-                      ? chipTone[category.id]
-                      : "border-white bg-white/90 text-foreground hover:bg-white",
+                    "h-auto min-h-20 w-full min-w-0 shrink flex-col gap-1 whitespace-normal px-2 text-center text-lg leading-tight text-balance hover:bg-white sm:min-h-28 sm:text-xl",
+                    softTile,
+                    selected && softTileOn,
                   )}
                 >
-                  <span className="relative block size-12 overflow-hidden rounded-full">
-                    <Picture word={category.words[0]} />
-                  </span>
+                  <TopicMark id={category.id} />
                   {category.label}
-                  <span className="text-sm font-bold opacity-60">
-                    {open}/{category.words.length} từ
-                  </span>
+                  <LevelSteps category={category} progressRaw={progressRaw} />
                 </Button>
               );
             })}
@@ -336,7 +320,7 @@ function HomeScreen({
         <Button
           type="button"
           onClick={onPlay}
-          className="h-20 w-full max-w-lg rounded-full text-3xl font-extrabold shadow-[0_8px_0_#c2412d] active:translate-y-1 active:shadow-[0_4px_0_#c2412d]"
+          className={cn("h-16 w-full max-w-lg text-3xl sm:h-20", chunky)}
         >
           Chơi thôi
         </Button>
@@ -350,6 +334,7 @@ function PlayScreen({
   round,
   phase,
   shake,
+  levelUp,
   stars,
   onHome,
   onHear,
@@ -359,6 +344,7 @@ function PlayScreen({
   round: Round;
   phase: "play" | "success";
   shake: { id: string; nonce: number } | null;
+  levelUp: number | null;
   stars: number;
   onHome: () => void;
   onHear: () => void;
@@ -366,35 +352,43 @@ function PlayScreen({
 }) {
   return (
     <div className="flex flex-1 flex-col gap-3" data-round-top>
-      <header className="grid grid-cols-[auto_1fr_auto] items-center gap-2">
+      <header className="grid min-w-0 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2">
         <Button
           type="button"
           variant="outline"
           onClick={onHome}
-          className="h-12 rounded-full border-4 border-white bg-white/90 px-4 text-base font-extrabold"
+          className={backClass}
         >
-          Về nhà
+          Quay lại
         </Button>
         <p className="truncate text-center text-lg font-extrabold sm:text-xl">{category.label}</p>
         <StarMeter count={stars} />
       </header>
 
-      <section className="rounded-[2rem] border-4 border-white bg-white/90 px-4 py-4 text-center shadow-[0_8px_0_rgba(80,50,20,0.08)] sm:px-6 sm:py-5">
-        <h1 className="text-5xl font-extrabold tracking-tight text-balance sm:text-7xl">{round.answer.en}</h1>
-        <p className="mt-1 text-2xl font-extrabold text-rose-500 sm:text-3xl">{round.answer.vi}</p>
-        <Button
-          type="button"
-          onClick={onHear}
-          className="mt-3 h-14 rounded-full px-6 text-xl font-extrabold sm:h-16 sm:px-8 sm:text-2xl"
-        >
-          <Volume2 className="size-7 sm:size-8" />
-          Nghe lại
-        </Button>
+      <section className="rounded-[2rem] border-4 border-[#ffe4cf] bg-white px-4 py-5 text-center shadow-[0_8px_0_rgba(92,51,23,0.08)] sm:px-6 sm:py-6">
+        <h1 className="text-5xl font-extrabold tracking-tight text-balance text-[#5c3317] sm:text-7xl">{round.answer.en}</h1>
+        <p className="mt-1 text-2xl font-extrabold text-[#c45a3c] sm:text-3xl">{round.answer.vi}</p>
+        <div className="mt-3 flex justify-center">
+          <Button
+            type="button"
+            onClick={onHear}
+            className="h-14 rounded-full px-6 text-base font-extrabold sm:h-16 sm:px-8 sm:text-xl"
+          >
+            <Volume2 className="size-5 sm:size-7" />
+            Nghe lại
+          </Button>
+        </div>
       </section>
 
       <div className="flex h-16 items-center justify-center" aria-live="polite">
-        {phase === "success" ? (
-          <p className="animate-pop-in inline-flex items-center gap-2 rounded-full bg-emerald-500 px-5 py-2 text-2xl font-extrabold text-white shadow-[0_6px_0_#047857] sm:text-3xl">
+        {phase === "success" && levelUp ? (
+          <p className="animate-pop-in inline-flex items-center gap-2 rounded-full bg-[#ef6b4a] px-5 py-2 text-2xl font-extrabold text-white shadow-[0_6px_0_#d4533a] sm:text-3xl">
+            <StarIcon filled className="size-7" />
+            Lên cấp {levelUp}!
+            <StarIcon filled className="size-7" />
+          </p>
+        ) : phase === "success" ? (
+          <p className="animate-pop-in inline-flex items-center gap-2 rounded-full bg-[#2f9e6b] px-5 py-2 text-2xl font-extrabold text-white shadow-[0_6px_0_#217a52] sm:text-3xl">
             <StarIcon filled className="size-7" />
             Đúng rồi!
             <StarIcon filled className="size-7" />
@@ -402,7 +396,7 @@ function PlayScreen({
         ) : null}
       </div>
 
-      <div className="grid flex-1 grid-cols-3 content-start gap-3 sm:gap-4">
+      <div className="grid w-full min-w-0 flex-1 grid-cols-3 content-start gap-2 sm:gap-4">
         {round.choices.map((choice, index) => {
           const shaking = shake?.id === choice.id;
           const correct = phase === "success" && choice.id === round.answer.id;
@@ -416,9 +410,9 @@ function PlayScreen({
               aria-label={`${position}. ${choice.en}, ${choice.vi}`}
               onClick={() => onPick(choice.id)}
               className={cn(
-                "relative aspect-square h-auto w-full min-w-0 overflow-hidden rounded-[1.6rem] border-4 border-white bg-white p-0 shadow-[0_7px_0_rgba(80,50,20,0.14)]",
-                "hover:bg-white active:translate-y-1 active:shadow-[0_3px_0_rgba(80,50,20,0.14)] disabled:opacity-100",
-                correct && "scale-105 border-emerald-400 ring-4 ring-emerald-400",
+                cardFace,
+                "hover:bg-white",
+                correct && "scale-105 border-[#2f9e6b] ring-4 ring-[#8ed4b0]",
                 shaking && "animate-card-shake",
               )}
             >
@@ -427,7 +421,7 @@ function PlayScreen({
               </span>
               <span
                 aria-hidden="true"
-                className="absolute top-1.5 left-1.5 z-10 flex size-6 items-center justify-center rounded-full bg-white/90 text-xs font-extrabold text-amber-950 shadow-sm ring-2 ring-amber-100 sm:size-7 sm:text-sm"
+                className="absolute top-1.5 left-1.5 z-10 flex size-6 items-center justify-center rounded-full bg-white/95 text-xs font-extrabold text-[#5c3317] shadow-sm ring-2 ring-[#ffe4cf] sm:size-7 sm:text-sm"
               >
                 {position}
               </span>

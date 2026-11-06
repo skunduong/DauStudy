@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { PRAISE, WRONG } from "@/lib/phrases";
+import { isNamedPraise, isNamedWrong, isThinkingPrompt } from "@/lib/phrases";
 import { categories } from "@/lib/words";
 
 const englishWords = new Set(categories.flatMap((category) => category.words.map((word) => word.en)));
@@ -15,7 +15,12 @@ const browserHeaders = {
 
 function allowed(lang: string, text: string) {
   if (lang === "en") return englishWords.has(text);
-  if (lang === "vi") return text === PRAISE || text === WRONG;
+  if (lang === "vi") {
+    return (
+      text.length <= 64 &&
+      (isNamedPraise(text) || isNamedWrong(text) || isThinkingPrompt(text))
+    );
+  }
   return false;
 }
 

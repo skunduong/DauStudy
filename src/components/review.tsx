@@ -1,14 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import { Volume2 } from "lucide-react";
 import { Flashcards } from "@/components/flashcards";
+import { LevelSteps } from "@/components/level-steps";
 import { Picture } from "@/components/picture";
 import { TopicMark } from "@/components/topic-mark";
 import { Button } from "@/components/ui/button";
+import { openWords, readProgressRaw, serverProgressRaw, subscribeProgress, topicProgress } from "@/lib/progress";
 import { speakEnglish, stopSpeech } from "@/lib/speech";
 import { backClass, chunky, shell, softTile } from "@/lib/look";
-import { categories, categoryById, type Category } from "@/lib/words";
+import { categories, categoryById, type Category, type Word } from "@/lib/words";
 import { cn } from "@/lib/utils";
 
 export function Review({ onExit }: { onExit: () => void }) {
@@ -16,7 +18,13 @@ export function Review({ onExit }: { onExit: () => void }) {
   const [index, setIndex] = useState(0);
   const [done, setDone] = useState(false);
   const [quizzing, setQuizzing] = useState(false);
+  const progressRaw = useSyncExternalStore(subscribeProgress, readProgressRaw, serverProgressRaw);
   const category = categoryId ? categoryById(categoryId) : null;
+  /** Review walks through the words the child has opened, easy level first. */
+  const words = useMemo(
+    () => (category ? openWords(category, topicProgress(progressRaw, category)) : []),
+    [category, progressRaw],
+  );
 
   useEffect(() => {
     return () => stopSpeech();
@@ -37,7 +45,7 @@ export function Review({ onExit }: { onExit: () => void }) {
       if (!category || done || quizzing || typingTarget(event.target)) return;
       event.preventDefault();
       event.stopPropagation();
-      speakEnglish(category.words[index].en);
+      speakEnglish(words[index].en);
     }
 
     function onKeyUp(event: KeyboardEvent) {
@@ -52,7 +60,7 @@ export function Review({ onExit }: { onExit: () => void }) {
       window.removeEventListener("keydown", onKeyDown, true);
       window.removeEventListener("keyup", onKeyUp, true);
     };
-  }, [category, done, index, quizzing]);
+  }, [category, done, index, quizzing, words]);
 
   if (quizzing && category) {
     return <Flashcards quizCategoryId={category.id} onExit={() => setQuizzing(false)} />;
@@ -63,7 +71,7 @@ export function Review({ onExit }: { onExit: () => void }) {
     setCategoryId(id);
     setIndex(0);
     setDone(false);
-    speakEnglish(next.words[0].en);
+    speakEnglish(openWords(next, topicProgress(readProgressRaw(), next))[0].en);
   }
 
   function leaveTopic() {
@@ -84,45 +92,54 @@ export function Review({ onExit }: { onExit: () => void }) {
         {category ? (
           <TopicReview
             category={category}
+            words={words}
             index={index}
             done={done}
             onBack={leaveTopic}
             onPrev={() => {
               if (done) {
                 setDone(false);
-                speakEnglish(category.words[index].en);
+                speakEnglish(words[index].en);
                 return;
               }
               if (index === 0) return;
               const next = index - 1;
               setIndex(next);
-              speakEnglish(category.words[next].en);
+              speakEnglish(words[next].en);
             }}
             onNext={() => {
-              if (index >= category.words.length - 1) {
+              if (index >= words.length - 1) {
                 stopSpeech();
                 setDone(true);
                 return;
               }
               const next = index + 1;
               setIndex(next);
-              speakEnglish(category.words[next].en);
+              speakEnglish(words[next].en);
             }}
-            onHear={() => speakEnglish(category.words[index].en)}
+            onHear={() => speakEnglish(words[index].en)}
             onQuiz={() => {
               stopSpeech();
               setQuizzing(true);
             }}
           />
         ) : (
-          <TopicList onExit={onExit} onOpen={openTopic} />
+          <TopicList progressRaw={progressRaw} onExit={onExit} onOpen={openTopic} />
         )}
       </div>
     </div>
   );
 }
 
-function TopicList({ onExit, onOpen }: { onExit: () => void; onOpen: (id: string) => void }) {
+function TopicList({
+  progressRaw,
+  onExit,
+  onOpen,
+}: {
+  progressRaw: string;
+  onExit: () => void;
+  onOpen: (id: string) => void;
+}) {
   return (
     <div className="flex flex-1 flex-col">
       <div className="pt-1">
@@ -159,6 +176,7 @@ function TopicList({ onExit, onOpen }: { onExit: () => void; onOpen: (id: string
             >
               <TopicMark id={category.id} />
               {category.label}
+              <LevelSteps category={category} progressRaw={progressRaw} />
             </Button>
           ))}
         </div>
@@ -169,6 +187,7 @@ function TopicList({ onExit, onOpen }: { onExit: () => void; onOpen: (id: string
 
 function TopicReview({
   category,
+  words,
   index,
   done,
   onBack,
@@ -178,6 +197,7 @@ function TopicReview({
   onQuiz,
 }: {
   category: Category;
+  words: Word[];
   index: number;
   done: boolean;
   onBack: () => void;
@@ -186,8 +206,8 @@ function TopicReview({
   onHear: () => void;
   onQuiz: () => void;
 }) {
-  const word = category.words[index];
-  const total = category.words.length;
+  const word = words[Math.min(index, words.length - 1)];
+  const total = words.length;
   const place = `${done ? total : index + 1}/${total}`;
 
   return (

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useState, useSyncExternalStore, type FormEvent, type ReactNode } from "react";
 import { readChildName, saveChildName } from "@/lib/child";
 import { canvas, chunky, shell } from "@/lib/look";
 import { setMusicMuted, startMusic } from "@/lib/music";
@@ -8,15 +8,21 @@ import { isChildName, normalizeChildName } from "@/lib/phrases";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
+/** Nothing to subscribe to: these values only differ between the server render and the browser. */
+function subscribeNothing() {
+  return () => {};
+}
+
 export function CourseFrame({ children }: { children: ReactNode }) {
-  const [ready, setReady] = useState(false);
-  const [name, setName] = useState<string | null>(null);
+  // False while rendering on the server, true in the browser, without setting state in an effect.
+  const ready = useSyncExternalStore(subscribeNothing, () => true, () => false);
+  const savedName = useSyncExternalStore(subscribeNothing, readChildName, () => null);
+  const [typedName, setTypedName] = useState<string | null>(null);
+  const name = typedName ?? savedName;
   const [draft, setDraft] = useState("");
 
   useEffect(() => {
     setMusicMuted(false);
-    setName(readChildName());
-    setReady(true);
   }, []);
 
   useEffect(() => {
@@ -34,7 +40,7 @@ export function CourseFrame({ children }: { children: ReactNode }) {
     const next = normalizeChildName(draft);
     if (!isChildName(next)) return;
     saveChildName(next);
-    setName(next);
+    setTypedName(next);
     startMusic();
   }
 

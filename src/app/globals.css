@@ -122,10 +122,10 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply max-w-full overflow-x-clip bg-background text-foreground;
   }
   html {
-    @apply font-sans;
+    @apply max-w-full overflow-x-clip font-sans;
   }
   button {
     touch-action: manipulation;
@@ -138,21 +138,21 @@
     transform: translateX(0) rotate(0);
   }
   20% {
-    transform: translateX(-8px) rotate(-2deg);
+    transform: translateX(-4px) rotate(-1deg);
   }
   40% {
-    transform: translateX(8px) rotate(2deg);
+    transform: translateX(4px) rotate(1deg);
   }
   60% {
-    transform: translateX(-6px) rotate(-1deg);
+    transform: translateX(-3px) rotate(-0.5deg);
   }
   80% {
-    transform: translateX(5px) rotate(1deg);
+    transform: translateX(2px) rotate(0.5deg);
   }
 }
 
 .animate-card-shake {
-  animation: card-shake 0.48s ease-in-out;
+  animation: card-shake 0.28s ease-in-out;
 }
 
 @keyframes pop-in {
@@ -171,7 +171,7 @@
 }
 
 .animate-pop-in {
-  animation: pop-in 0.35s cubic-bezier(0.2, 1.2, 0.4, 1) both;
+  animation: pop-in 0.28s cubic-bezier(0.2, 1.2, 0.4, 1) both;
 }
 
 @media (prefers-reduced-motion: reduce) {

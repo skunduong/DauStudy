@@ -1,12 +1,27 @@
 # Học tiếng Anh
 
-Flashcard game for a toddler learning English. A card shows an English word (and a short Vietnamese meaning for the parent). Six pictures sit underneath. The child taps the picture that matches the word.
+The app has three doors: **Học tiếng Anh** (hear a word, tap the right picture), **Phát triển tư duy** (nine thinking games) and **Ôn bài** (go through a topic's words one card at a time, then play them). Parents type the child's name once; praise and the wrong-answer line use it.
 
-Categories: Động vật, Trái cây, Màu sắc, Hình dạng, Đồ vật, Hành động, Bộ phận cơ thể, Thời tiết, with 14–16 cards each. Each list in `src/lib/words.ts` runs from easy to hard, and every word has a level (1–3).
+Topics: Động vật (32), Trái cây (14), Màu sắc (14), Hình dạng (14), Đồ vật (28), Hành động (15), Bộ phận cơ thể (14), Nghề nghiệp (10), Xe cộ (10), Thời tiết (14).
 
-Words open a few at a time (`src/lib/progress.ts`). A topic starts with its six level-1 words, so the first boards show only those. When the child taps the right picture on the first try in 6 of the last 8 rounds, the next 2 words open, level 2 first and then level 3. A word that just opened is asked in the next round or two, next to pictures the child already knows. Words the child missed come back more often. Progress is saved per topic in the browser, like the stars, and each topic button shows how many words are open (for example “8/16 từ”). Animals, fruit, objects, and actions are photos in `public/cards` (Wikimedia Commons; see the `public/cards/CREDITS-*.txt` files). Body cards are original cartoons in the same folder. Color cards are fields of that color, filling the card; gold and silver have a soft metallic sheen. Shape cards are one solid shape on a light background. Weather cards (Thời tiết) are cartoon scenes drawn as inline SVG in `src/components/weather.tsx`. A small 1–6 badge marks the card’s place on the board.
+### Levels
 
-Speech comes from Google Translate, through `/api/speech`, because the browser cannot call Translate directly. A round speaks the English word (`tl=en`) when it starts, when **Nghe lại** is pressed, and when Space is pressed on the play screen. A correct tap plays “Bạn Đậu giỏi quá” (`tl=vi`) with “Đúng rồi!”. A wrong tap plays “Bạn Đậu chọn sai rồi” (`tl=vi`), shakes that card, and stays on the same round. Short clips are cached in memory on the server.
+Every word in `src/lib/words.ts` has a level, and each list runs from easy to hard:
+
+1. First words: things a Vietnamese toddler sees every day, short to say, easy to tell apart on a board of six. Each topic has exactly six.
+2. Still everyday, but longer or less frequent.
+3. Farther from home life, or easy to mix up with a level-1 word.
+4. Big topics only (animals, objects): zoo and sea animals, less common household things.
+
+The choice follows early-vocabulary data (Wordbank / MacArthur-Bates CDI: dog, duck, ball, cup and banana are among the first English words) and the Cambridge Pre A1 Starters word list for the later levels.
+
+Words open a few at a time (`src/lib/progress.ts`). A topic starts with its level-1 words. When the child taps the right picture on the first try in 6 of the last 8 rounds, the next 2 words open. A word that just opened is asked in the next round or two, next to pictures the child already knows, and missed words come back more often. Crossing into a new level shows **Lên cấp 2!** instead of **Đúng rồi!**. Topic buttons show a small staircase (one step per level) and how many words are open. Ôn bài walks through the open words only. The thinking games use level 1–2 words. Progress is saved per topic in the browser, like the stars.
+
+### Pictures
+
+Animals, fruit, objects and actions are photos in `public/cards` (Wikimedia Commons; see `public/cards/CREDITS-*.txt`). Body cards are original cartoons. Jobs and vehicles are illustrations from the new UI. Color cards are fields of that color; gold and silver have a soft metallic sheen. Shape cards are one solid shape on a light background. Weather cards are clay-style cartoon scenes drawn as inline SVG in `src/components/weather.tsx`. A small 1–6 badge marks the card's place on the board.
+
+Speech comes from Google Translate, through `/api/speech`, because the browser cannot call Translate directly. A round speaks the English word when it starts, when **Nghe lại** is pressed, and when Space is pressed. A correct tap plays "Bạn <name> giỏi quá"; a wrong tap plays "Bạn <name> chọn sai rồi", shakes that card, and stays on the same round. Short clips are cached in memory on the server.
 
 ## Run locally
 

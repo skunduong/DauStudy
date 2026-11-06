@@ -4,7 +4,7 @@ import { colorSwatches, categoryById } from "@/lib/words";
 const photoId: Record<string, string> = {
   animals: "cat",
   fruits: "apple",
-  objects: "motorbike",
+  objects: "ball",
   actions: "jump",
   body: "hand",
   jobs: "doctor",
