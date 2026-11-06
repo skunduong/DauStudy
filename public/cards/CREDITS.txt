@@ -1,0 +1,34 @@
+Photos are stored locally. Sources are Wikimedia Commons. Licenses are CC0, public domain, or Creative Commons (BY / BY-SA).
+
+Color cards (red, blue, yellow, green, orange, purple, pink, brown, black, white) are flat color fields, not photographs.
+
+cat.jpg — CC0 — AdinaVoicu — https://commons.wikimedia.org/wiki/File:Tabby_cat_with_blue_eyes-3336579.jpg
+dog.jpg — CC BY-SA 3.0 — Calyponte — https://commons.wikimedia.org/wiki/File:CPRileyFace.jpg
+bird.jpg — CC BY-SA 4.0 — Rhododendrites — https://commons.wikimedia.org/wiki/File:European_robin_(00500).jpg
+fish.jpg — CC BY-SA 2.5 — Wikimedia Commons — https://commons.wikimedia.org/wiki/File:Orandagoldfish.jpg
+duck.jpg — CC BY-SA 3.0 — Bert de Tilly — https://commons.wikimedia.org/wiki/File:Male_mallard_duck_-_head.jpg
+cow.jpg — CC BY-SA 4.0 — Osmo Lundell — https://commons.wikimedia.org/wiki/File:Cow_looking_at_camera_2025.jpg
+pig.jpg — CC BY-SA 4.0 — Gzen92 — https://commons.wikimedia.org/wiki/File:Cochon_domestique_(Sus_scrofa_domesticus)_(2).jpg
+rabbit.jpg — CC BY 4.0 — Niftypen — https://commons.wikimedia.org/wiki/File:Domestic_white_rabbit_sitting_in_a_meadow.jpg
+frog.jpg — Public domain — LiquidGhoul — https://commons.wikimedia.org/wiki/File:Australia_green_tree_frog_(Litoria_caerulea)_crop.jpg
+horse.jpg — CC BY-SA 3.0 us — Dori — https://commons.wikimedia.org/wiki/File:Horse_headshot_4397.jpg
+apple.jpg — CC0 — Sprinno — https://commons.wikimedia.org/wiki/File:Red_apple_on_white_background.jpg
+banana.jpg — CC BY-SA 4.0 — HaJunkiyada — https://commons.wikimedia.org/wiki/File:Liat_Portal_for_Foodie_Disorder_-_A_Single_Banana.jpg
+orange-fruit.jpg — CC BY-SA 4.0 — Ivar Leidus — https://commons.wikimedia.org/wiki/File:Oranges_-_whole-halved-segment.jpg
+grapes.jpg — CC BY-SA 3.0 — ProjectManhattan — https://commons.wikimedia.org/wiki/File:Red_grapes_2.jpg
+watermelon.jpg — CC BY-SA 4.0 — Mishra12krati — https://commons.wikimedia.org/wiki/File:Watermelon_slice.jpg
+strawberry.jpg — CC BY-SA 3.0 — FoeNyx — https://commons.wikimedia.org/wiki/File:FraiseFruitPhoto.jpg
+mango.jpg — CC BY-SA 4.0 — Ivar Leidus — https://commons.wikimedia.org/wiki/File:Mango_fruit_Nam_Dok_Mai.jpg
+pineapple.jpg — CC0 — Wilfredor — https://commons.wikimedia.org/wiki/File:Pineapple_fruit_2.jpg
+pear.jpg — CC BY-SA 3.0 — Augustus Binu — https://commons.wikimedia.org/wiki/File:Pear_DS.jpg
+lemon.jpg — CC BY-SA 2.5 — André Karwath — https://commons.wikimedia.org/wiki/File:Lemon.jpg
+ball.jpg — CC0 — Peter Glaser — https://commons.wikimedia.org/wiki/File:Adidas_soccer_ball_on_a_grass_pitch_(Unsplash).jpg
+car.jpg — CC0 — TudorTulok — https://commons.wikimedia.org/wiki/File:Red_Smart_Car_Side_View_Driveway.jpg
+book.jpg — CC BY 2.0 — Lin Kristensen — https://commons.wikimedia.org/wiki/File:Timeless_Books.jpg
+cup.jpg — CC BY-SA 2.0 — Julius Schorzman — https://commons.wikimedia.org/wiki/File:A_small_cup_of_coffee.JPG
+shoe.jpg — CC BY-SA 4.0 — Joeltorresmejia78 — https://commons.wikimedia.org/wiki/File:A_Vans_Sneaker_On_The_Side.jpg
+hat.jpg — CC BY-SA 4.0 — Eric Polk — https://commons.wikimedia.org/wiki/File:Friars_sun_hat.jpg
+bed.jpg — CC BY-SA 4.0 — Peachyeung316 — https://commons.wikimedia.org/wiki/File:European_single_bed_from_seahorse.jpg
+chair.jpg — CC BY 4.0 — Tangerineduel — https://commons.wikimedia.org/wiki/File:Danish_Rosewood_Dining_Chair-1.jpg
+spoon.jpg — CC BY-SA 4.0 — DIVYALAKSHWIN — https://commons.wikimedia.org/wiki/File:Spoon.jpg
+clock.jpg — Public domain — Damian Yerrick — https://commons.wikimedia.org/wiki/File:Analog_clock_at_11_55.jpg
