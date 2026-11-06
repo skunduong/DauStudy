@@ -14,7 +14,9 @@ if (!existsSync(path.resolve(".open-next/worker.js"))) {
 }
 
 rmSync(workerDir, { recursive: true, force: true });
-const wrangler = createRequire(import.meta.url).resolve("wrangler/bin/wrangler.js");
+// wrangler's package "exports" hide bin/, so find it from its package.json instead.
+const wranglerPackage = createRequire(import.meta.url).resolve("wrangler/package.json");
+const wrangler = path.join(path.dirname(wranglerPackage), "bin", "wrangler.js");
 execFileSync(
   process.execPath,
   [wrangler, "deploy", "--dry-run", "--config", "wrangler.worker.jsonc", "--outdir", workerDir],
