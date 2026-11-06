@@ -1,0 +1,9 @@
+{
+  // Used only to bundle .open-next/worker.js into one module for Cloudflare Pages (`npm run deploy`).
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "hoccungbinhminh",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-10-01",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": { "directory": ".open-next/assets", "binding": "ASSETS" }
+}

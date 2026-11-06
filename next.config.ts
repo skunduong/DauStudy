@@ -4,6 +4,8 @@ const nextConfig: NextConfig = {
   allowedDevOrigins: ["127.0.0.1"],
   images: {
     localPatterns: [{ pathname: "/cards/**", search: "?v=2" }],
+    // Cloudflare Pages has no image optimizer binding, so serve the card photos as they are.
+    unoptimized: process.env.CF_BUILD === "1",
   },
   devIndicators: false,
   cacheComponents: true,

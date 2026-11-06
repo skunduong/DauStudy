@@ -16,3 +16,14 @@ npm run dev
 Open [http://127.0.0.1:43127](http://127.0.0.1:43127).
 
 The pictures still work if Google Translate does not answer. The game just stays quiet.
+
+## Deploy (Cloudflare Pages)
+
+The live site is the Pages project `hoccungbinhminh` (https://hoccungbinhminh.pages.dev). It runs the full Next.js server through [OpenNext](https://opennext.js.org/cloudflare), so `/api/speech` keeps working. It is not a static export. Wrangler needs Node 22+.
+
+```bash
+npx wrangler login
+CF_BUILD=1 CI=1 npm run deploy
+```
+
+`npm run build:cf` builds into `.open-next/`, bundles the worker into `.open-next/assets/_worker.js/`, and writes `_routes.json` so static files skip the worker. `npm run preview:cf` serves that build locally.
